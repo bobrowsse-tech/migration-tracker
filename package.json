@@ -100,5 +100,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/bobrowsse-tech/migration-tracker"
+  },
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#312E81",
+    "theme": "dark"
   }
 }

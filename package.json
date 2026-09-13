@@ -105,5 +105,16 @@
   "galleryBanner": {
     "color": "#312E81",
     "theme": "dark"
+  },
+  "keywords": [
+    "migration",
+    "refactor",
+    "progress",
+    "codemod",
+    "tech-debt"
+  ],
+  "homepage": "https://github.com/bobrowsse-tech/migration-tracker#readme",
+  "bugs": {
+    "url": "https://github.com/bobrowsse-tech/migration-tracker/issues"
   }
 }

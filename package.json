@@ -1,0 +1,103 @@
+{
+  "name": "migration-tracker",
+  "displayName": "Migration-in-Progress Tracker",
+  "description": "Turns a team-wide code migration into a shared, persistent progress view instead of tribal knowledge.",
+  "version": "0.1.0",
+  "publisher": "bobrowsse-tech",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "migration-trackerContainer",
+          "title": "Migration-in-Progress Tracker",
+          "icon": "$(arrow-swap)"
+        }
+      ]
+    },
+    "views": {
+      "migration-trackerContainer": [
+        {
+          "id": "migration-trackerView",
+          "name": "Dashboard",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "migrationTracker.define",
+        "title": "Migration-in-Progress Tracker: Define Migration"
+      },
+      {
+        "command": "migrationTracker.rescan",
+        "title": "Migration-in-Progress Tracker: Rescan"
+      },
+      {
+        "command": "migrationTracker.jumpToNext",
+        "title": "Migration-in-Progress Tracker: Jump to Next"
+      },
+      {
+        "command": "migrationTracker.viewProgress",
+        "title": "Migration-in-Progress Tracker: View Progress"
+      }
+    ],
+    "languageModelTools": [
+      {
+        "name": "migration_status",
+        "tags": [
+          "migration-tracker"
+        ],
+        "toolReferenceName": "migration_status",
+        "displayName": "Migration-in-Progress Tracker — migration_status",
+        "modelDescription": "Reports progress on a defined code migration (how many call sites are migrated vs. remaining) and can list or jump to the next unmigrated site. Use this when the user asks about migration progress or wants to continue a migration.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "migrationId": {
+              "type": "string",
+              "description": "The id of the migration to report on, as defined in .migrations/<id>.json. Omit to list all defined migrations."
+            }
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "npm run check-types && node esbuild.js",
+    "check-types": "tsc --noEmit",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "vscode:prepublish": "npm run package",
+    "package": "npm run check-types && node esbuild.js --production",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.95.0",
+    "@types/node": "^20.0.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.0",
+    "esbuild": "^0.24.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "ts-morph": "latest",
+    "jscodeshift": "latest",
+    "simple-git": "latest"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bobrowsse-tech/migration-tracker"
+  }
+}

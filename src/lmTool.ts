@@ -1,27 +1,50 @@
 import * as vscode from 'vscode';
+import type { MigrationService } from './service';
 
-// Language Model Tool registration — makes this extension's core capability
-// callable by Copilot Chat, Claude Code, or any other agent that supports
-// VS Code's Language Model Tool API. The `name` here MUST match the `name`
-// field of the languageModelTools entry in package.json.
-//
-// Docs: https://code.visualstudio.com/api/extension-guides/ai/tools
+interface ToolInput {
+  migrationId?: string;
+}
 
-export function registerMigrationStatusTool(context: vscode.ExtensionContext) {
+/**
+ * Report-only LM tool — reports progress / next sites; does not rewrite code.
+ */
+export function registerMigrationStatusTool(
+  context: vscode.ExtensionContext,
+  getService: () => MigrationService | undefined,
+  onReported?: (migrationId?: string) => Promise<void>
+) {
   context.subscriptions.push(
-    vscode.lm.registerTool("migration_status", {
+    vscode.lm.registerTool('migration_status', {
       async invoke(
-        options: vscode.LanguageModelToolInvocationOptions<any>,
+        options: vscode.LanguageModelToolInvocationOptions<ToolInput>,
         _token: vscode.CancellationToken
       ) {
-        // TODO: implement using the same core logic the dashboard buttons
-        // call — do not duplicate; both entry points should call one
-        // shared service module (see DIRECTIVE.md, "Implementation phases").
-        const result = "migration_status is not yet implemented \u2014 see DIRECTIVE.md";
-        return new vscode.LanguageModelToolResult([
-          new vscode.LanguageModelTextPart(result),
-        ]);
+        const service = getService();
+        if (!service) {
+          return textResult('No workspace folder is open.');
+        }
+        const id = options.input?.migrationId;
+        try {
+          if (!id) {
+            await onReported?.();
+            return textResult(service.formatAll());
+          }
+          const progress = await service.getProgress(id);
+          await onReported?.(id);
+          const next = service.nextSite(id);
+          const extra = next
+            ? `\n\nNext unmigrated site: ${next.file}:${next.line}\n${next.snippet}`
+            : '\n\nNo remaining sites.';
+          return textResult(service.formatStatus(progress) + extra);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          return textResult(msg);
+        }
       },
     })
   );
+}
+
+function textResult(text: string): vscode.LanguageModelToolResult {
+  return new vscode.LanguageModelToolResult([new vscode.LanguageModelTextPart(text)]);
 }

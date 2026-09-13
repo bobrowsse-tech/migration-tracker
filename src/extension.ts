@@ -4,7 +4,6 @@ import { registerMigrationStatusTool } from './lmTool';
 import {
   MigrationService,
   type MatcherKind,
-  type MigrationProgress,
 } from './service';
 
 const ACTIVE_KEY = 'migrationTracker.activeId';
@@ -24,7 +23,7 @@ function createService(): MigrationService | undefined {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  const dashboard = new DashboardProvider(context.extensionUri);
+  const dashboard = new DashboardProvider();
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider('migration-trackerView', dashboard)
   );

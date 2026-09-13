@@ -14,7 +14,7 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
   private summary = 'No migration selected.';
   private selectHandler?: (id: string) => void;
 
-  constructor(private readonly extensionUri: vscode.Uri) {}
+  constructor() {}
 
   onSelectMigration(handler: (id: string) => void) {
     this.selectHandler = handler;

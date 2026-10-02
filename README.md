@@ -10,7 +10,7 @@ cd migration-tracker
 npm install
 npm run package
 npx @vscode/vsce package --no-dependencies
-code --install-extension migration-tracker-0.1.0.vsix
+code --install-extension migration-tracker-0.1.1.vsix
 ```
 
 Or press **F5** after `npm install`.
@@ -39,6 +39,10 @@ npm run watch
 npm run test:unit
 npm run package
 ```
+
+## Author
+
+[Bob Rowsse Walakira](https://bobrowsse.com) — [hello@bobrowsse.com](mailto:hello@bobrowsse.com)
 
 ## License
 
